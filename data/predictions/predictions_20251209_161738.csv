@@ -1,0 +1,6 @@
+file_index,row_index,prediction,original_price,original_year,original_manufacturer,original_model
+0,0,low,10500,2007,lexus,gs350
+1,0,low,8995,2011,audi,a3 2.0t premium plus pzev
+2,0,high,65900,2018,lincoln,navigator reserve
+3,0,high,24500,2013,ford,mustang
+4,0,medium,14495,2008,jeep,wrangler
