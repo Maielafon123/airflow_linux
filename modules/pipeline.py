@@ -1,7 +1,6 @@
 import logging
 import os
 from datetime import datetime
-
 import dill
 import pandas as pd
 from sklearn.compose import ColumnTransformer, make_column_selector
@@ -15,7 +14,6 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
-# Указываем абсолютный путь к проекту
 PROJECT_PATH = '/home/maielafon/airflow_hw'
 
 
@@ -65,10 +63,7 @@ def create_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def pipeline() -> None:
-    # Абсолютный путь к данным
     data_path = os.path.join(PROJECT_PATH, 'data', 'train', 'homework.csv')
-
-    # Проверяем существование файла
     if not os.path.exists(data_path):
         logging.error(f"Файл не найден: {data_path}")
         raise FileNotFoundError(f"Файл не найден: {data_path}")
@@ -128,8 +123,6 @@ def pipeline() -> None:
     logging.info(f'best model: {type(best_pipe.named_steps["classifier"]).__name__}, accuracy: {best_score:.4f}')
 
     best_pipe.fit(X, y)
-
-    # Создаем директорию для моделей если ее нет
     models_dir = os.path.join(PROJECT_PATH, 'data', 'models')
     os.makedirs(models_dir, exist_ok=True)
 
@@ -145,7 +138,6 @@ def pipeline() -> None:
 
 
 if __name__ == '__main__':
-    # Настройка логирования
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s'
