@@ -4,20 +4,17 @@ from datetime import datetime
 import sys
 import os
 import logging
+from modules.pipeline import pipeline
+from modules.predict import predict
 
 logger = logging.getLogger(__name__)
 
-# Добавь путь к модулям глобально
 sys.path.insert(0, os.path.expanduser('~/airflow_hw'))
 
 
 def train_model(**context):
-    """Функция для обучения модели"""
     try:
         logger.info("Начинаем обучение модели...")
-
-        # Импортируем модуль внутри функции
-        from modules.pipeline import pipeline
 
         result = pipeline()
         logger.info(f"Обучение завершено. Результат: {result}")
@@ -29,17 +26,12 @@ def train_model(**context):
 
 
 def make_predictions(**context):
-    """Функция для предсказаний"""
     try:
         logger.info("Начинаем предсказания...")
 
-        # Получаем результат из предыдущей задачи
         ti = context['ti']
         train_result = ti.xcom_pull(task_ids='pipeline')
         logger.info(f"Получен результат обучения: {train_result}")
-
-        # Импортируем модуль
-        from modules.predict import predict
 
         result = predict()
         logger.info(f"Предсказания завершены. Результат: {result}")
@@ -53,12 +45,12 @@ def make_predictions(**context):
 with DAG(
         'ml_pipeline',
         start_date=datetime(2024, 1, 1),
-        schedule=None,  # Только ручной запуск
+        schedule=None,  
         catchup=False,
-        max_active_runs=1,  # Только один запуск за раз
+        max_active_runs=1,  
         default_args={
             'owner': 'airflow',
-            'retries': 0,  # Без ретраев для отладки
+            'retries': 0,  
             'retry_delay': None,
         },
         tags=['ml'],
@@ -67,14 +59,12 @@ with DAG(
     train_task = PythonOperator(
         task_id='pipeline',
         python_callable=train_model,
-        # УБРАТЬ: provide_context=True,  # <-- УДАЛИ ЭТУ СТРОКУ
         execution_timeout=None,
     )
 
     predict_task = PythonOperator(
         task_id='predict',
         python_callable=make_predictions,
-        # УБРАТЬ: provide_context=True,  # <-- УДАЛИ ЭТУ СТРОКУ
         execution_timeout=None,
     )
 
